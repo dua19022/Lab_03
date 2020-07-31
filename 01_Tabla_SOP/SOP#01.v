@@ -6,8 +6,8 @@ module Lab_03();
 // Declaracion de variables por modulo del circuito
 
 wire N1, N2, N3; // Not del circuito
-wire O1, O2, O3; // Or del circutio
-wire A1; // And del circuito
+wire O1; // Or del circutio
+wire A1, A2, A3, A4, A5; // And del circuito
 
 reg inA, inB, inC; // Declarando que el circuito tiene 3 entradas
 
@@ -16,16 +16,18 @@ reg inA, inB, inC; // Declarando que el circuito tiene 3 entradas
 not NA (N1,   inA); // A not
 not NB (N2,   inB); // B not
 not NC (N3,   inC); // C not
-or OA (O1,    inA, inB, N3); //Las 3 entradas del Or_1
-or OB (O2,    inA, N2, N3); // Las 3 entradas del Or_2
-or OC (O3,    N1, N2, inC); // Las 3 entradas del Or_3
-and A0 (A1,   O1, O2, O3); // Las 3 entradas del And
+and AA (A1,   N1, N2, N3); // Las 3 entradas del And_1
+and AB (A2,   N1, inB, N3); // Las 3 entradas del And_2
+and AC (A3,   inA, N2, N3); // Las 3 entradas del And_3
+and AD (A4,   inA, N2, inC); // Las 3 entradas del And_4
+and AE (A5,   inA, inB, inC); // Las 3 entradas del And_5
+or OA (O1,    A1, A2, A3, A4, A5); //Las 3 entradas del Or
 
 initial // Inicio el codigo luego de establecer las condiciones
   begin
     $display("A B C| Y");
     $display("-------");
-    $monitor("%b %b %b | %b", inA, inB, inC, A1);
+    $monitor("%b %b %b | %b", inA, inB, inC, O1);
 
 // Inputs en 0
 inA = 0;
@@ -45,7 +47,7 @@ end
 
 initial
   begin
-    $dumpfile("Lab_03#00_tb.vcd");
+    $dumpfile("SOP#01_tb.vcd");
     $dumpvars(0, Lab_03);
   end
 endmodule //finalizar el modulo
