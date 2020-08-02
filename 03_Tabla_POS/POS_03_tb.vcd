@@ -1,0 +1,147 @@
+$date
+	Sat Aug 01 22:23:51 2020
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module Lab_03 $end
+$var wire 1 ! A1 $end
+$var wire 1 " N1 $end
+$var wire 1 # N2 $end
+$var wire 1 $ N3 $end
+$var wire 1 % N4 $end
+$var wire 1 & O1 $end
+$var wire 1 ' O2 $end
+$var wire 1 ( O3 $end
+$var wire 1 ) O4 $end
+$var wire 1 * O5 $end
+$var wire 1 + O6 $end
+$var wire 1 , O7 $end
+$var wire 1 - O8 $end
+$var wire 1 . O9 $end
+$var reg 1 / inA $end
+$var reg 1 0 inB $end
+$var reg 1 1 inC $end
+$var reg 1 2 inD $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+02
+01
+00
+0/
+1.
+1-
+1,
+1+
+1*
+1)
+1(
+1'
+1&
+1%
+1$
+1#
+1"
+1!
+$end
+#1
+0%
+12
+#2
+1%
+0$
+02
+11
+#3
+0%
+12
+#4
+0!
+1%
+1'
+0&
+1$
+0#
+02
+01
+10
+#5
+0'
+1&
+0%
+12
+#6
+0(
+1%
+1'
+0$
+02
+11
+#7
+0)
+1(
+0%
+12
+#8
+1!
+1%
+1$
+1+
+1*
+1#
+1)
+0"
+02
+01
+00
+1/
+#9
+0!
+0*
+0%
+12
+#10
+1!
+1%
+1*
+0$
+02
+11
+#11
+0!
+0+
+0%
+12
+#12
+1%
+1-
+0,
+1$
+1+
+0#
+02
+01
+10
+#13
+0-
+1,
+0%
+12
+#14
+1!
+1%
+1-
+0$
+02
+11
+#15
+0!
+0.
+0%
+12
+#16
