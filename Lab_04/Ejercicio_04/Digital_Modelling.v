@@ -24,7 +24,7 @@ module Gates_Level_01(input wire inA, inB, inC, inD, output wire Y);
     and AG (A8,   inA, N2, inC, N4); // Las 4 entradas del And
     or O0 (Y,    A1, A2, A3, A4, A5, A6, A7, A8); //Las 8 entradas del Or_1
 
-endmodule //finalizar el modulo
+endmodule //Modulo 01 code by Gateslevel
 
 module Gates_Level_02(input wire inA, inB, inC, output wire Y);
 
@@ -35,9 +35,9 @@ module Gates_Level_02(input wire inA, inB, inC, output wire Y);
     //Declaracion de compuertas
 
     not NB (N1,   inB); // B not
-    and AA (Y, N1);
+    and AA (Y,    N1);
 
-endmodule //finalizar el modulo
+endmodule //Modulo 02 code by Gateslevel
 
 module Gates_Level_03(input wire inA, inB, inC, output wire Y);
 
@@ -53,7 +53,7 @@ module Gates_Level_03(input wire inA, inB, inC, output wire Y);
     and AB (A2,     inB, inC);
     or O0 (Y,      A1, A2);
 
-endmodule //finalizar el modulo
+endmodule //Modulo 03 code by Gateslevel
 
 module Gates_Level_04(input wire inA, inB, inC, output wire Y);
 
@@ -70,4 +70,33 @@ module Gates_Level_04(input wire inA, inB, inC, output wire Y);
     and AB (A2,     inB);
     or O0 (Y,      A1, A2);
 
-endmodule //finalizar el modulo
+endmodule //Modulo 04 code by Gateslevel
+
+module Logic_Operator_01(input wire inA, inB, inC, output wire Y);
+
+    //Declaracion de variables de modo Logico
+
+    assign Y = (~inA & ~inC) | (~inB & ~inC) | (inA & inC);
+
+endmodule //Modulo 05 code by Logic Operators
+
+module Logic_Operator_02(input wire inA, inB, inC, inD, output wire Y);
+
+    //Declaracion de variables de modo logico
+    assign Y = (inA & inB) | (inA & inC) | (~inB & ~inD);
+
+endmodule //Modulo 06 code by Logic Operators
+
+module Logic_Operator_03(input wire inA, inB, inC, inD, output wire Y);
+
+    //Declaracion de variables de modo logico
+    assign Y = (~inB & ~inC & ~inD) | (inA & ~inD) | (inA & ~inB) | (inA & ~inC);
+
+endmodule //Modulo 07 code by Logic Operators
+
+module Logic_Operator_04(input wire inA, inB, inC, inD, output wire Y);
+
+    //Declaracion de variables de modo logico
+    assign Y = (inB) | (~inC & inD) | (inA & inD);
+    
+endmodule //Modulo 08 code by Logic Operators
