@@ -21,6 +21,22 @@ module DFlipFlop(
         end
 endmodule
 
+// FlipFlop de 2 bit
+module D2FlipFlop(
+    input wire clk, reset,
+    input wire [1:0]D,
+    output reg [1:0]Q);
+
+        always @(posedge clk , posedge reset) begin
+            if(reset)begin
+            Q <= 2'b0; 
+            end
+
+            else
+            Q <= D; 
+        end
+endmodule
+
 // FlipFlop de 3 bit
 module D3FlipFlop(
     input wire reset, clk,
@@ -122,7 +138,100 @@ endmodule
 
 // Maquina de Control
 module Control(
-    input wire
-)
+    input wire clk, reset,
+    input wire O, I, P, P2,
+    output wire [1;0]C, P, P2);
+
+        wire [1:0]S_00
+        wire [1:0]SF_00
+        wire S1, S0;
+        wire S1F, S0F;
+
+        assign SF_00[0] = S0F;
+        assign SF_00[1] = S1F;
+    
+        // Estados futuros
+        assign S1F = ( S1 & ~S0 & ~P2) | ~S1 & S0 & I & P);
+        assign S0F = ( ~S1 & ~S0 O) | (~S1 & S0 & ~I & ~P);
 
 
+        // Salidas
+        assign [1]C = (S1 & ~S0);
+        assign [0]C = (~S1 & S0);
+        assign P = S0;
+
+        // Conexion al FLIPFLOP
+        D2FlipFlop FF00(clk, reset, SF_00, S_00);
+endmodule
+
+// Maquina de Motores
+module Motores(
+    input wire P, sz, sx, sy, sy2, sh, 
+    output wire [2:0]M,
+    output wire En, sh );
+
+        wire [2:0]S_000;
+        wire [2:0]SF_000;
+        wire S0, S1, S2;
+        wire SF0, SF1, SF2
+
+        assign SF_000[0] = SF0;
+        assign SF_000[1] = SF1;
+        assign SF_000[2] = SF2;
+
+
+        // Estados Futuros
+        assign SF2 = (S2 & ~S1 & ~S0) | (S2 & ~S1 & ~sh) | (~S2 & S1 & S0 & sy);
+        assign SF1 = (~S2 & S1 & ~S0) | (~S2 & S1 & ~sy) | (~S2 & ~S1 & S0 & sz);
+        assign SF0 = (~S2 & ~S1 & ~S0 & P) | (S2 & ~S1 & S0 & ~sh) | (~S2 & ~S1 & S0 & ~sz) | (~S2 & S1 & ~S0 & sx) | (~S2 & S1 & S0 & ~sy) | (S2 & ~S1 & ~S0 & sy2);
+
+        // Salidas
+        assign M[2] = S2 & ~S1;
+        assign M[1] = ~S2 & S1;
+        assign M[0] = (~S2 & S0) | (~S1 & S0);
+        assign sh = ~S1;
+
+        // FlipFlop
+        D3FlipFlop FF01(clk, reset, SF_000, S_000);
+endmodule
+
+module Cama_Hotend(
+    input wire clk, reset, PB, sh, T1, T2, T3, AB,
+    input wire [1;0]F,
+    output wire EN, EN0, EN1, HT,
+    output wire [2:0]LCD,
+    output wire [1:0]CH,
+    output wire [1:0]PH);
+
+        wire [3:0]S_0000;
+        wire [3:0]SF_0000;
+        wire S0, S1, S2, S3;
+        wire SF0, SF1, SF2, SF3;
+
+        assign SF_0000[0] = SF0;
+        assign SF_0000[1] = SF1;
+        assign SF_0000[2] = SF2;
+        assign SF_0000[3] = SF3;
+        
+        // Estados futuros
+        assign SF3 = (S3 & ~S2 & ~S1) | (S3 & ~S2 & ~S0 & ~AB) | (~S2 & ~S1 & S0 & F[1] & F[0]);
+        assign SF2 = (~S3 & S2 & ~AB) | (~S3 & S2 & ~S1 & S0) | (~S3 & S2 & S1 ~S0) | (~S3 & ~S1 & S0 & F[1] & ~F[0]) | (~S3 & ~S2 & S1 & S0 & T1);
+        assign SF1 = (~S3 & S1 & ~S0) | (~S3 & ~S2 & S1 & ~T1) | (~S3 & S2 & S1 & ~AB) | (~S2 & S1 & ~S0 & ~AB) | (~S3 & S2 & ~S1 & S0 & T2) | (S3 & ~S2 & ~S1 & S0 & T3) | (~S3 & ~S2 & ~S1 & S0 & ~F[1] & F[0]);
+        assign SF0 = (~S3 & ~S2 &  ~S1 & S0 & ~F[0]) | (~S3 & ~S2 & S1 & ~S0 & T1) | (~S3 & ~S2 & S1 & S0 & ~T1) | (~S3 & S2 & S1 & ~S0 & T2) | (~S3 & S2 & ~S1 & S0 & ~T2) | (S3 & ~S2 & ~S1 & ~S0 & T3) | (S3 & ~S2 & ~S1 & S0 & ~T3) | (~S3 & ~S2 & ~S1 & ~S0 & sh & PB) | (~S3 & S2 & S1 & S0 & ~AB);
+
+        // Salidas
+        assign LCD[2] = (~S3 & S2 & ~S1) | (~S3 & S2 & S0) | (S3 & ~S2 & ~S0);
+        assign LCD[1] = (~S3 & ~S2 & S1) | (S3 & ~S2 & ~S1) | (~S3 & S1 & ~S0);
+        assign LCD[0] = (~S3 & ~S2 & S0) | (~S3 & ~S1 & S0) | (~S2 & ~S1 & S0) | (~S3 & S2 & S1 & ~S0);
+        assign CH[1] = (~S3 & S2) | (~S2 & ~S1 & ~S0);
+        assign CH[0] = (~S2 & ~S0);
+        assign PH[0] = (S3 & ~S2 & ~S1) | (~S3 & ~S0);
+        assign PH[1] = (S3 & ~S2 & ~S1) | (~S3 & S1 & S0);
+        assign EN = ~S3;
+        assign EN0 = S3;
+        assign EN1 = ~S2 & ~S1;
+        assign HT = (~S3 & ~S1) | (~S2 & ~S0) | (~S3 & S2 & S0);
+
+        //FLipFlop
+        D4FlipFlop FF10(clk, reset, SF_0000, S_0000);
+endmodule
