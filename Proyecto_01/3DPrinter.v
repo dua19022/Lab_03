@@ -139,7 +139,7 @@ endmodule
 // Maquina de Control
 module Control(
     input wire clk, reset,
-    input wire O, I, P, P2,
+    input wire O, I,
     output wire [1;0]C, P, P2);
 
         wire [1:0]S_00
@@ -152,7 +152,7 @@ module Control(
     
         // Estados futuros
         assign S1F = ( S1 & ~S0 & ~P2) | ~S1 & S0 & I & P);
-        assign S0F = ( ~S1 & ~S0 O) | (~S1 & S0 & ~I & ~P);
+        assign S0F = ( ~S1 & ~S0 & O) | (~S1 & S0 & ~I & ~P);
 
 
         // Salidas
@@ -235,3 +235,47 @@ module Cama_Hotend(
         //FLipFlop
         D4FlipFlop FF10(clk, reset, SF_0000, S_0000);
 endmodule
+
+module Indicadores(
+    input wire O, P, HT,
+    input wire [1:0]PH,
+    input wire [1:0]CH
+    output wire [2:0]W);
+
+        wire [2:0]S_000;
+        wire [2:0]SF_000;
+        wire S0, S1, S2;
+        wire SF0, SF1, SF2;
+
+        assign SF_000[0] = SF0;
+        assign SF_000[1] = SF1;
+        assign SF_000[2] = SF2;
+
+        // Estados Futuros
+        assign SF2 = (~S2 & S1 & ~S0 & P) | (S2 & ~S1 & ~S0 & ~HT) | (S2 & ~S1 & S0 & ~P2) | (S2 & S1 & ~S0 & ~P2) | (S2 & ~S1 & ~S0 & PH[1] & PH[0] & CH[1] & CH[0]) | (S2 & ~S1 & ~S0 & PH[1] & ~PH[0] & CH[1] & ~CH[0]);
+        assign SF1 = (~S2 & ~S1 & ~S0 & O) | (~S2 & S1 & ~S0 & ~P) | (~S2 & S1 & S0 & ~P2) | (S2 & S1 & ~S0 & ~P2) | (S2 & ~S1 & ~S0 & HT & PH[1] & PH[0] & CH[1] & CH[0]) | (S2 & ~S1 & ~S0 & HT & ~PH[1] & PH[0] & ~CH[1] & CH[0]);
+        assign SF0 = (~S2 & S1 & S0 & ~P2) | (S2 & ~S1 & S0 & ~P2) | (S2 & ~S1 & ~S0 & HT & ~PH[1] & PH[0] & ~CH[1] & CH[0]) | (S2 & ~S1 & ~S0 & HT & PH[1] & ~PH[0] & CH[1] & ~CH[0]);
+
+        // Salidas
+        assign W[2] = (S2 & ~S1) | (S2 & ~S0);
+        assign W[1] = (~S2 & S1) | (S1 & ~S0);
+        assign W[0] = (~S2 & S1 & S0) | (S2 & ~S1 & S0);
+
+        //FlipFlop
+        D3FlipFlop FF11(clk, reset, SF_000, S_000);
+endmodule
+
+module FSM(
+    input wire clk, reset, signal, lector, encen, conti, sz, sx, sy, sy2, sh,
+    input wire [1:0]bit_selec,
+    output wire [1:0]C,
+    output wire [2:0]LCD,
+    output wire [2:0]M,
+    output wire [2:0]W);
+
+        wire op, P2, P;
+        wire [1:0]CH;
+
+        Antirebotes M001(reset, clk, signal, op);
+        Control M010(clk, reset, encen, lector, [1:0]C, P, P2);
+        Motores M011()
