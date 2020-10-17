@@ -120,6 +120,42 @@ module timer03(
         end
 endmodule
 
+module counterGG(
+    input wire clk, reset,
+    input wire [7:0]maxvalue,
+    output reg zero,
+    output reg [7:0]value);
+
+        always @ (posedge clk, posedge reset) begin
+        if (reset) begin
+            value <= 8'b0;
+            zero <= 1'b0;
+         end
+        else if (value < maxvalue) begin
+            value <= value + 1;
+            zero <= 1'b0;
+         end
+        else if (value == maxvalue) begin
+            value <= 8'b0;
+            zero <= 1'b1;
+         end
+        end
+endmodule
+
+module timerGG( 
+    input wire clk, EN,
+    output wire T1);
+
+
+    wire clock, zero;
+    wire [7:0]value;
+
+    assign clock = clk & EN;
+
+    counterGG T_1(clock, ~EN, 8'b00000101, zero, value);
+    DFlipFlop T_2(zero, ~EN, 1'b1, T1);
+endmodule
+
 // --------------- Cajas Negras ---------------
 
 // Maquina de anti-rebote
@@ -133,33 +169,58 @@ module Antirebotes(
         assign inc = signal;
         assign out = ~ot & signal;
 
-        DFlipFlop AR(clk, reset, signal, out);
+        DFlipFlop AR(clk, reset, inc, ot);
 endmodule
 
 // Maquina de Control
-module Control(
+/*module Control(
     input wire clk, reset,
-    input wire O, I,
-    output wire [1:0] C,
-    output wire P, P2);
+    input wire O, I, R, P2,
+    output wire [1:0]C,
+    output wire P);
 
-        wire [1:0] S_00;
-        wire [1:0] SF_00;
+        wire [1:0]S_00;
+        wire [1:0]SF_00;
         wire S1, S0;
-        wire S1F, S0F;
 
-        assign SF_00 [0] = S0F;
-        assign SF_00 [1] = S1F;
-    
+        assign S0 = S_00[0];
+        assign S1 = S_00[1];
+
         // Estados futuros
-        assign S1F = (S1 & ~S0 & ~P2) | (~S1 & S0 & I & P);
-        assign S0F = (~S1 & ~S0 & O) | (~S1 & S0 & ~I & ~P);
+        assign SF_00[1] = (S1 & ~S0 & ~P2) | (~S1 & S0 & I & R);
+        assign SF_00[0] = (~S1 & ~S0 & O) | (~S1 & S0 & ~I & ~R);
 
 
         // Salidas
-        assign C [1] = (S1 & ~S0);
-        assign C [0] = (~S1 & S0);
-        assign P = S0;
+        assign C[1] = (~S1 & S0);
+        assign C[0] = (S1 & ~S0);
+        assign P = ~S0;
+
+        // Conexion al FLIPFLOP
+        D2FlipFlop FF00(clk, reset, SF_00, S_00);
+endmodule
+*/
+
+module Control(
+    input wire clk, reset, 
+    input wire O, I, R, P2,
+    output wire [1:0]C,
+    output wire P);
+
+        wire [1:0]S_00;
+        wire [1:0]SF_00;
+        wire S1, S0;
+
+        assign S0 = S_00[0];
+        assign S1 = S_00[1];
+
+        assign SF_00[1] = (~S1 & S0 & O & I & ~P2 & R) | (S1 & ~S0 & O & I & ~P2 & R);
+        assign SF_00[0] = (~S1 & O & ~I & ~P2 & ~R);
+
+        // Salidas
+        assign C[1] = (~S1 & S0);
+        assign C[0] = (S1 & ~S0);
+        assign P = ~S0;
 
         // Conexion al FLIPFLOP
         D2FlipFlop FF00(clk, reset, SF_00, S_00);
@@ -174,21 +235,20 @@ module Motores(
         wire [2:0]S_000;
         wire [2:0]SF_000;
         wire S0, S1, S2;
-        wire SF0, SF1, SF2;
 
-        assign SF_000[0] = SF0;
-        assign SF_000[1] = SF1;
-        assign SF_000[2] = SF2;
+        assign S0 = S_000[0];
+        assign S1 = S_000[1];
+        assign S2 = S_000[2];
 
 
         // Estados Futuros
-        assign SF2 = (S2 & ~S1 & ~S0) | (S2 & ~S1 & ~sh) | (~S2 & S1 & S0 & sy);
-        assign SF1 = (~S2 & S1 & ~S0) | (~S2 & S1 & ~sy) | (~S2 & ~S1 & S0 & sz);
-        assign SF0 = (~S2 & ~S1 & ~S0 & P) | (S2 & ~S1 & S0 & ~sh) | (~S2 & ~S1 & S0 & ~sz) | (~S2 & S1 & ~S0 & sx) | (~S2 & S1 & S0 & ~sy) | (S2 & ~S1 & ~S0 & sy2);
+        assign SF_000[2] = (S2 & ~S1 & ~S0) | (S2 & ~S1 & ~sh) | (~S2 & S1 & S0 & sy);
+        assign SF_000[1] = (~S2 & S1 & ~S0) | (~S2 & S1 & ~sy) | (~S2 & ~S1 & S0 & sz);
+        assign SF_000[0] = (~S2 & ~S1 & ~S0 & P) | (S2 & ~S1 & S0 & ~sh) | (~S2 & ~S1 & S0 & ~sz) | (~S2 & S1 & ~S0 & sx) | (~S2 & S1 & S0 & ~sy) | (S2 & ~S1 & ~S0 & sy2);
 
         // Salidas
-        assign M[2] = S2 & ~S1;
-        assign M[1] = ~S2 & S1;
+        assign M[2] = (S2 & ~S1);
+        assign M[1] = (~S2 & S1);
         assign M[0] = (~S2 & S0) | (~S1 & S0);
         assign HOME = ~S1;
 
@@ -196,10 +256,11 @@ module Motores(
         D3FlipFlop FF01(clk, reset, SF_000, S_000);
 endmodule
 
+// Maquina de Cama/Hotend
 module Cama_Hotend(
-    input wire clk, reset, PB, sh, T1, T2, T3, AB,
+    input wire clk, reset, PB, sh, T1, AB,
     input wire [1:0]F,
-    output wire EN, EN0, EN1, HT,
+    output wire EN, HT,
     output wire [2:0]LCD,
     output wire [1:0]CH,
     output wire [1:0]PH);
@@ -207,18 +268,20 @@ module Cama_Hotend(
         wire [3:0]S_0000;
         wire [3:0]SF_0000;
         wire S0, S1, S2, S3;
-        wire SF0, SF1, SF2, SF3;
 
-        assign SF_0000[0] = SF0;
-        assign SF_0000[1] = SF1;
-        assign SF_0000[2] = SF2;
-        assign SF_0000[3] = SF3;
+        assign S0 = S_0000[0];
+        assign S1 = S_0000[1];
+        assign S2 = S_0000[2];
+        assign S3 = S_0000[3];
         
         // Estados futuros
-        assign SF3 = (S3 & ~S2 & ~S1) | (S3 & ~S2 & ~S0 & ~AB) | (~S2 & ~S1 & S0 & F[1] & F[0]);
-        assign SF2 = (~S3 & S2 & ~AB) | (~S3 & S2 & ~S1 & S0) | (~S3 & S2 & S1 & ~S0) | (~S3 & ~S1 & S0 & F[1] & ~F[0]) | (~S3 & ~S2 & S1 & S0 & T1);
-        assign SF1 = (~S3 & S1 & ~S0) | (~S3 & ~S2 & S1 & ~T1) | (~S3 & S2 & S1 & ~AB) | (~S2 & S1 & ~S0 & ~AB) | (~S3 & S2 & ~S1 & S0 & T2) | (S3 & ~S2 & ~S1 & S0 & T3) | (~S3 & ~S2 & ~S1 & S0 & ~F[1] & F[0]);
-        assign SF0 = (~S3 & ~S2 &  ~S1 & S0 & ~F[0]) | (~S3 & ~S2 & S1 & ~S0 & T1) | (~S3 & ~S2 & S1 & S0 & ~T1) | (~S3 & S2 & S1 & ~S0 & T2) | (~S3 & S2 & ~S1 & S0 & ~T2) | (S3 & ~S2 & ~S1 & ~S0 & T3) | (S3 & ~S2 & ~S1 & S0 & ~T3) | (~S3 & ~S2 & ~S1 & ~S0 & sh & PB) | (~S3 & S2 & S1 & S0 & ~AB);
+        assign SF_0000[3] = (S3 & ~S2 & ~S1) | (S3 & ~S2 & ~S0 & ~AB) | (~S2 & ~S1 & S0 & F[1] & F[0]);
+        assign SF_0000[2] = (~S3 & S2 & ~AB) | (~S3 & S2 & ~S1 & S0) | (~S3 & S2 & S1 & ~S0) | (~S3 & ~S1 & S0 & F[1] & ~F[0]) | (~S3 & ~S2 & S1 & S0 & T1);
+        assign SF_0000[1] = (~S3 & S1 & ~S0) | (~S3 & ~S2 & S1 & ~T1) | (~S3 & S2 & S1 & ~AB) | (~S2 & S1 & ~S0 & ~AB) | (~S3 & S2 & ~S1 & S0 & T1) | (S3 & ~S2 & ~S1 & S0 & T1) | (~S3 & ~S2 & ~S1 & S0 & ~F[1] & F[0]);
+        assign SF_0000[0] = (~S3 & ~S2 &  ~S1 & S0 & ~F[0]) | (~S3 & ~S2 & S1 & ~S0 & T1) | (~S3 & ~S2 & S1 & S0 & ~T1) | (~S3 & S2 & S1 & ~S0 & T1) | (~S3 & S2 & ~S1 & S0 & ~T1) | (S3 & ~S2 & ~S1 & ~S0 & T1) | (S3 & ~S2 & ~S1 & S0 & ~T1) | (~S3 & ~S2 & ~S1 & ~S0 & sh & PB) | (~S3 & S2 & S1 & S0 & ~AB);
+
+        //FLipFlop
+        D4FlipFlop FF10(clk, reset, SF_0000, S_0000);
 
         // Salidas
         assign LCD[2] = (~S3 & S2 & ~S1) | (~S3 & S2 & S0) | (S3 & ~S2 & ~S0);
@@ -229,14 +292,12 @@ module Cama_Hotend(
         assign PH[0] = (S3 & ~S2 & ~S1) | (~S3 & ~S0);
         assign PH[1] = (S3 & ~S2 & ~S1) | (~S3 & S1 & S0);
         assign EN = ~S3;
-        assign EN0 = S3;
-        assign EN1 = ~S2 & ~S1;
         assign HT = (~S3 & ~S1) | (~S2 & ~S0) | (~S3 & S2 & S0);
 
-        //FLipFlop
-        D4FlipFlop FF10(clk, reset, SF_0000, S_0000);
+        
 endmodule
 
+// Maquina de Indicadores
 module Indicadores(
     input wire clk, reset, O, P, HT, P2,
     input wire [1:0]PH,
@@ -246,44 +307,49 @@ module Indicadores(
         wire [2:0]S_000;
         wire [2:0]SF_000;
         wire S0, S1, S2;
-        wire SF0, SF1, SF2;
 
-        assign SF_000[0] = SF0;
-        assign SF_000[1] = SF1;
-        assign SF_000[2] = SF2;
+        assign S0 = S_000[0];
+        assign S1 = S_000[1];
+        assign S2 = S_000[2];
 
         // Estados Futuros
-        assign SF2 = (~S2 & S1 & ~S0 & P) | (S2 & ~S1 & ~S0 & ~HT) | (S2 & ~S1 & S0 & ~P2) | (S2 & S1 & ~S0 & ~P2) | (S2 & ~S1 & ~S0 & PH[1] & PH[0] & CH[1] & CH[0]) | (S2 & ~S1 & ~S0 & PH[1] & ~PH[0] & CH[1] & ~CH[0]);
-        assign SF1 = (~S2 & ~S1 & ~S0 & O) | (~S2 & S1 & ~S0 & ~P) | (~S2 & S1 & S0 & ~P2) | (S2 & S1 & ~S0 & ~P2) | (S2 & ~S1 & ~S0 & HT & PH[1] & PH[0] & CH[1] & CH[0]) | (S2 & ~S1 & ~S0 & HT & ~PH[1] & PH[0] & ~CH[1] & CH[0]);
-        assign SF0 = (~S2 & S1 & S0 & ~P2) | (S2 & ~S1 & S0 & ~P2) | (S2 & ~S1 & ~S0 & HT & ~PH[1] & PH[0] & ~CH[1] & CH[0]) | (S2 & ~S1 & ~S0 & HT & PH[1] & ~PH[0] & CH[1] & ~CH[0]);
+        assign SF_000[2] = (~S2 & S1 & ~S0 & P) | (S2 & ~S1 & ~S0 & ~HT) | (S2 & ~S1 & S0 & ~P2) | (S2 & S1 & ~S0 & ~P2) | (S2 & ~S1 & ~S0 & PH[1] & PH[0] & CH[1] & CH[0]) | (S2 & ~S1 & ~S0 & PH[1] & ~PH[0] & CH[1] & ~CH[0]);
+        assign SF_000[1] = (~S2 & ~S1 & ~S0 & O) | (~S2 & S1 & ~S0 & ~P) | (~S2 & S1 & S0 & ~P2) | (S2 & S1 & ~S0 & ~P2) | (S2 & ~S1 & ~S0 & HT & PH[1] & PH[0] & CH[1] & CH[0]) | (S2 & ~S1 & ~S0 & HT & ~PH[1] & PH[0] & ~CH[1] & CH[0]);
+        assign SF_000[0] = (~S2 & S1 & S0 & ~P2) | (S2 & ~S1 & S0 & ~P2) | (S2 & ~S1 & ~S0 & HT & ~PH[1] & PH[0] & ~CH[1] & CH[0]) | (S2 & ~S1 & ~S0 & HT & PH[1] & ~PH[0] & CH[1] & ~CH[0]);
+
+        //FlipFlop
+        D3FlipFlop FF11(clk, reset, SF_000, S_000);
 
         // Salidas
         assign W[2] = (S2 & ~S1) | (S2 & ~S0);
         assign W[1] = (~S2 & S1) | (S1 & ~S0);
         assign W[0] = (~S2 & S1 & S0) | (S2 & ~S1 & S0);
 
-        //FlipFlop
-        D3FlipFlop FF11(clk, reset, SF_000, S_000);
+
 endmodule
 
+// Maquina Main
 module FSM(
-    input wire clk, reset, signal, lector, encen, conti, sz, sx, sy, sy2, sh,
+    input wire clk, reset, signal, I, O, P2, PB, sz, sx, sy, sy2, sh, AB,
     input wire [1:0]F,
     output wire [1:0]C,
     output wire [2:0]LCD,
     output wire [2:0]M,
     output wire [2:0]W);
 
-        wire op, P2, P, HT, EN, EN0, EN1, HOME, T1, T2, T3;
+        wire ot, HT, EN, HOME, T1, P;
         wire [1:0]CH;
         wire [1:0]PH;
 
-        Antirebotes M001(clk, reset, signal, op);
-        Control M010(clk, reset, encen, lector, C, P, P2);
-        Motores M011(clk, reset, P, sz, sx, sy, sy2, sh, M, HOME);
-        Cama_Hotend M100(clk, reset, PB, HOME, T1, T2, T3, AB, F, EN, EN0, EN1, HT, LCD, CH, PH);
-        Indicadores M101(clk, reset, encen, HT, P2, LCD, PH, CH, W);
+        Antirebotes M001(clk, reset, signal, ot);
+        Control M010(clk, reset, O, I, ot, P2, C, P);
+        Motores M011(clk, reset, ot, sz, sx, sy, sy2, sh, M, HOME);
+        Cama_Hotend M100(clk, reset, PB, HOME, T1, AB, F, EN, HT, LCD, CH, PH);
+        Indicadores M101(clk, reset, O, ot, HT, P2, PH, CH, W);
+        /*
         timer01 M110(EN, T1);
         timer02 M111(EN0, T2);
         timer03 M000(EN1, T3);
+        */
+        timerGG M111(clk, EN, T1);
 endmodule

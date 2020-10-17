@@ -1,0 +1,31 @@
+[*]
+[*] GTKWave Analyzer v3.3.103 (w)1999-2019 BSI
+[*] Sat Oct 17 23:16:18 2020
+[*]
+[dumpfile] "/home/marcoaduartec/Documents/GitHub/Digital_lab/Lab_Digital/Proyecto_01/3DPrinter_tb.vcd"
+[dumpfile_mtime] "Sat Oct 17 23:15:21 2020"
+[dumpfile_size] 5319
+[savefile] "/home/marcoaduartec/Documents/GitHub/Digital_lab/Lab_Digital/Proyecto_01/3DPrinter_tb.gtkw"
+[timestart] 0
+[size] 1132 663
+[pos] -1 -1
+*-4.946717 100 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[sst_width] 242
+[signals_width] 94
+[sst_expanded] 1
+[sst_vpaned_height] 179
+@28
+testbench.F[1:0]
+testbench.PB
+testbench.sh
+testbench.sy2
+testbench.sy
+testbench.sx
+testbench.sz
+testbench.signal
+testbench.I
+testbench.O
+testbench.reset
+testbench.clk
+[pattern_trace] 1
+[pattern_trace] 0
