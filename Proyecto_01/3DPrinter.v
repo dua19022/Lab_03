@@ -173,34 +173,6 @@ module Antirebotes(
 endmodule
 
 // Maquina de Control
-/*module Control(
-    input wire clk, reset,
-    input wire O, I, R, P2,
-    output wire [1:0]C,
-    output wire P);
-
-        wire [1:0]S_00;
-        wire [1:0]SF_00;
-        wire S1, S0;
-
-        assign S0 = S_00[0];
-        assign S1 = S_00[1];
-
-        // Estados futuros
-        assign SF_00[1] = (S1 & ~S0 & ~P2) | (~S1 & S0 & I & R);
-        assign SF_00[0] = (~S1 & ~S0 & O) | (~S1 & S0 & ~I & ~R);
-
-
-        // Salidas
-        assign C[1] = (~S1 & S0);
-        assign C[0] = (S1 & ~S0);
-        assign P = ~S0;
-
-        // Conexion al FLIPFLOP
-        D2FlipFlop FF00(clk, reset, SF_00, S_00);
-endmodule
-*/
-
 module Control(
     input wire clk, reset, 
     input wire O, I, R, P2,
