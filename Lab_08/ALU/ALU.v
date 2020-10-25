@@ -22,7 +22,7 @@ module ALU(
                 3'b101: result = A | ~B; // Opcion de OR y B negado
                 3'b110: result = A - B; // Opcion de resta
                 3'b111: result = (A < B) ? 1:0; // Opcion de comparacion si es A mayor que B 0000
-                default: result = 3'b000; // Si no esta la opcion se asigna 0000
+                default: result = 4'b0000; // Si no esta la opcion se asigna 0000
             endcase
         end
 endmodule
