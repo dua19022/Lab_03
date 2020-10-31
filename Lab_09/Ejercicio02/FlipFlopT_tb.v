@@ -19,6 +19,7 @@ initial begin
     #2 reset = 0;
     #2 En = 1; 
     #4 En = 0;
+    #2 En = 1;
 end
 
 always

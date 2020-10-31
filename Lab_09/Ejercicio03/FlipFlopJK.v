@@ -1,7 +1,7 @@
-//Electronica Digital 1
-// Marco Duarte
-// Ejercicio 03
-// FlipFlop tipo JK
+    //Electronica Digital 1
+    // Marco Duarte
+    // Ejercicio 03
+    // FlipFlop tipo JK
 
 module FFD(
     input wire clk, reset, En, D,

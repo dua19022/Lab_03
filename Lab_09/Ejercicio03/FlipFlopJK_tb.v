@@ -1,6 +1,6 @@
-// Marco DUarte
+// Marco Duarte
 // TestBench
-// Ejercicio 02
+// Ejercicio 03
 
 module testbench();
 
