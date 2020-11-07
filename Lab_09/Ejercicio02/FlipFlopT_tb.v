@@ -21,7 +21,7 @@ initial begin
     #4 En = 0;
     #2 En = 1;
 end
-
+    
 always
     #1 clk = ~clk;
 
