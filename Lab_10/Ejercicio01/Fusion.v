@@ -66,12 +66,12 @@ endmodule
 module fusion(
     input wire Clk, reset, En, non, En2,
     input wire [11:0]load,
+    output wire [7:0]B,
     output wire [3:0]Q1,
     output wire [3:0]Q2);
 
         wire [11:0]A;
-        wire [7:0]B;
-
+        
         counter12 U1(Clk, reset, En, non, load, A);
         ROM U2(A, B);
         Fetch U3(Clk, reset, En2, B, Q1, Q2);

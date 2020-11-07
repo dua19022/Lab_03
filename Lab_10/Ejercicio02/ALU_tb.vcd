@@ -1,0 +1,257 @@
+$date
+	Sat Nov  7 13:07:38 2020
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module testbench $end
+$var wire 4 ! out [3:0] $end
+$var wire 1 " exit $end
+$var wire 1 # carry $end
+$var reg 1 $ Clk $end
+$var reg 1 % En $end
+$var reg 1 & En1 $end
+$var reg 1 ' En2 $end
+$var reg 3 ( command [2:0] $end
+$var reg 4 ) entradas [3:0] $end
+$var reg 1 * reset $end
+$scope module U0 $end
+$var wire 1 $ Clk $end
+$var wire 1 % En $end
+$var wire 1 & En1 $end
+$var wire 1 ' En2 $end
+$var wire 3 + command [2:0] $end
+$var wire 4 , entradas [3:0] $end
+$var wire 1 * reset $end
+$var wire 4 - out [3:0] $end
+$var wire 4 . exit_alu [3:0] $end
+$var wire 1 " exit $end
+$var wire 1 # carry $end
+$var wire 4 / b [3:0] $end
+$var wire 4 0 a [3:0] $end
+$scope module U1 $end
+$var wire 1 1 En1 $end
+$var wire 4 2 entradas [3:0] $end
+$var wire 4 3 salidas [3:0] $end
+$upscope $end
+$scope module U2 $end
+$var wire 1 $ Clk $end
+$var wire 1 % En $end
+$var wire 1 * reset $end
+$var wire 4 4 D [3:0] $end
+$var reg 4 5 Q [3:0] $end
+$upscope $end
+$scope module U3 $end
+$var wire 1 6 En1 $end
+$var wire 4 7 entradas [3:0] $end
+$var wire 4 8 salidas [3:0] $end
+$upscope $end
+$scope module U4 $end
+$var wire 4 9 A [3:0] $end
+$var wire 4 : B [3:0] $end
+$var wire 3 ; command [2:0] $end
+$var reg 1 # carry $end
+$var reg 1 " exit $end
+$var reg 5 < q [4:0] $end
+$var reg 4 = result [3:0] $end
+$upscope $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+bx =
+bx <
+bx ;
+bx :
+bx 9
+bx 8
+b0x 7
+x6
+bx 5
+bx 4
+bx 3
+b0x 2
+x1
+bx 0
+bx /
+bx .
+bx -
+bx ,
+bx +
+x*
+bx )
+bx (
+x'
+x&
+x%
+x$
+x#
+x"
+bx !
+$end
+#1
+0"
+0#
+b0xxxx <
+bz /
+bz 3
+bz :
+01
+b0 (
+b0 +
+b0 ;
+b0 7
+0'
+0%
+0*
+1$
+b0 2
+0&
+b0 )
+b0 ,
+#2
+0$
+#3
+bz !
+bz -
+bz 8
+06
+b0 .
+b0 4
+b0 =
+b0 <
+b0 0
+b0 5
+b0 9
+1$
+1*
+#4
+0$
+#5
+1$
+0*
+#6
+0$
+#7
+b1 /
+b1 3
+b1 :
+11
+1$
+b1 2
+1&
+b1 )
+b1 ,
+#8
+0$
+#9
+1$
+b1 7
+1'
+1%
+#10
+0$
+#11
+1$
+#12
+0$
+#13
+b1111 0
+b1111 5
+b1111 9
+bz !
+bz -
+bz 8
+06
+b1110 .
+b1110 4
+b1110 =
+0#
+b1110 <
+1$
+b1 (
+b1 +
+b1 ;
+#14
+0$
+#15
+b1 !
+b1 -
+b1 8
+16
+b1101 .
+b1101 4
+b1101 =
+b1101 <
+b1110 0
+b1110 5
+b1110 9
+1$
+#16
+0$
+#17
+b1 0
+b1 5
+b1 9
+b1 .
+b1 4
+b1 =
+b1 <
+1$
+b10 (
+b10 +
+b10 ;
+#18
+0$
+#19
+1$
+0%
+#20
+0$
+#21
+1$
+b101 )
+b101 ,
+1%
+#22
+0$
+#23
+1$
+#24
+0$
+#25
+1$
+#26
+0$
+#27
+1$
+#28
+0$
+#29
+1$
+#30
+0$
+#31
+1$
+#32
+0$
+#33
+1$
+#34
+0$
+#35
+1$
+#36
+0$
+#37
+1$
+#38
+0$
+#39
+1$
+#40
+0$
