@@ -21,11 +21,8 @@ initial begin
     #2 reset = 1;
     #2 reset = 0;
     #2 entradas = 4'b0001; En1 = 1;
-    #2 En = 1; En2 = 1;
-    #4 entradas = 4'b0001; command = 3'b001;
-    #4 command = 3'b010;
-    #2 En = 0;
-    #2 En = 1; entradas = 4'b0101;
+    #2 En = 1; En2 = 1; command = 3'b010;
+
 end
 
 always
