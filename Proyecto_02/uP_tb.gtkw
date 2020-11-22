@@ -1,0 +1,44 @@
+[*]
+[*] GTKWave Analyzer v3.3.103 (w)1999-2019 BSI
+[*] Sun Nov 22 06:24:17 2020
+[*]
+[dumpfile] "/home/marcoaduartec/Documents/GitHub/Digital_lab/Lab_Digital/Proyecto_02/uP_tb.vcd"
+[dumpfile_mtime] "Sun Nov 22 04:52:11 2020"
+[dumpfile_size] 47696
+[savefile] "/home/marcoaduartec/Documents/GitHub/Digital_lab/Lab_Digital/Proyecto_02/uP_tb.gtkw"
+[timestart] 0
+[size] 1609 574
+[pos] 152 147
+*-4.726318 90 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[sst_width] 260
+[signals_width] 166
+[sst_expanded] 1
+[sst_vpaned_height] 145
+@28
+testbench.clock
+testbench.reset
+testbench.phase
+@22
+[color] 2
+testbench.program_byte[7:0]
+[color] 3
+testbench.address_RAM[11:0]
+[color] 4
+testbench.PC[11:0]
+@28
+[color] 6
+testbench.c_flag
+[color] 6
+testbench.z_flag
+@22
+[color] 7
+testbench.oprnd[3:0]
+[color] 7
+testbench.instr[3:0]
+testbench.accu[3:0]
+testbench.FF_out[3:0]
+@23
+[color] 5
+testbench.data_bus[3:0]
+[pattern_trace] 1
+[pattern_trace] 0
